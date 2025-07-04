@@ -18,7 +18,24 @@ app.get('/', (req, res) => {
         message: 'success',
     });
 
-})                                                             
+}) ;
+app.post('/payment/create',async(req,res)=>{
+const total= parseInt(req.query.total);
+if(total && total >0){
+ const paymentIntent=await stripe.paymentIntents.create({
+    amount:total,
+    currency:"usd"
+ })
+
+ res.status(201).json({
+    client_secret:paymentIntent.client_secret
+ })
+}else{
+
+    res.status(400).send({error:"invalid or mising total amount "})
+}
+
+})                                                            
 
 
 exports.api = onRequest(app);
